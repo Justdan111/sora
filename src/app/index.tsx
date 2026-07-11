@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GradientBackground } from '@/components/gradient-background';
@@ -16,6 +17,22 @@ const SUGGESTIONS = [
   'Audit DeFi protocol',
   'Stress-test smart contracts',
 ];
+
+// Entrance choreography: headline words land one by one, then the cards
+// cascade in while the composer fades up with them.
+const HEADLINE_LINES = [
+  ['What', 'are', 'we'],
+  ['building', 'today?'],
+];
+const WORD_STAGGER = 140;
+const WORD_DURATION = 420;
+const WORD_COUNT = HEADLINE_LINES.flat().length;
+// Index of each line's first word within the full headline.
+const LINE_OFFSETS = HEADLINE_LINES.map((_, lineIndex) =>
+  HEADLINE_LINES.slice(0, lineIndex).reduce((count, line) => count + line.length, 0)
+);
+const CARDS_BASE_DELAY = WORD_STAGGER * WORD_COUNT + 250;
+const CARD_STAGGER = 150;
 
 export default function HomeScreen() {
   const [prompt, setPrompt] = useState('');
@@ -49,24 +66,45 @@ export default function HomeScreen() {
 
           <View className="flex-1" />
 
-          {/* Headline */}
-          <Text className="px-6 pb-6 font-inter-semibold text-[42px] leading-[47px] tracking-tight text-content-primary">
-            What are we{'\n'}building today?
-          </Text>
+          {/* Headline: one word at a time */}
+          <View className="px-6 pb-6" accessible accessibilityLabel="What are we building today?">
+            {HEADLINE_LINES.map((line, lineIndex) => (
+              <View key={line.join(' ')} className="flex-row">
+                {line.map((word, indexInLine) => {
+                  const delay = (LINE_OFFSETS[lineIndex] + indexInLine) * WORD_STAGGER;
+                  return (
+                    <Animated.View
+                      key={word}
+                      entering={FadeInDown.duration(WORD_DURATION).delay(delay)}>
+                      <Text className="font-inter-semibold text-[42px] leading-[47px] tracking-tight text-content-primary">
+                        {indexInLine < line.length - 1 ? `${word} ` : word}
+                      </Text>
+                    </Animated.View>
+                  );
+                })}
+              </View>
+            ))}
+          </View>
 
-          {/* Quick-prompt cards */}
+          {/* Quick-prompt cards: cascade in after the headline */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             className="mb-4 grow-0"
             contentContainerClassName="gap-3 px-5">
-            {SUGGESTIONS.map((label) => (
-              <SuggestionCard key={label} label={label} onPress={setPrompt} />
+            {SUGGESTIONS.map((label, index) => (
+              <Animated.View
+                key={label}
+                entering={FadeInDown.duration(450).delay(CARDS_BASE_DELAY + index * CARD_STAGGER)}>
+                <SuggestionCard label={label} onPress={setPrompt} />
+              </Animated.View>
             ))}
           </ScrollView>
 
-          {/* Composer */}
-          <View className="h-[36%]">
+          {/* Composer: fades up together with the cards */}
+          <Animated.View
+            className="h-[36%]"
+            entering={FadeIn.duration(600).delay(CARDS_BASE_DELAY)}>
             <PromptPanel
               value={prompt}
               onChangeText={setPrompt}
@@ -76,7 +114,7 @@ export default function HomeScreen() {
               onPressModel={() => {}}
               onPressMic={() => router.push('/voice')}
             />
-          </View>
+          </Animated.View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>

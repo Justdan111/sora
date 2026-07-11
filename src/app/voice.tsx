@@ -71,9 +71,9 @@ function TranscriptWord({
       style={[
         {
           fontFamily: "InterMedium",
-          fontSize: 26,
-          lineHeight: 34,
-          letterSpacing: -0.3,
+          fontSize: 31,
+          lineHeight: 38,
+          letterSpacing: -0.5,
         },
         animatedStyle,
       ]}
@@ -84,18 +84,12 @@ function TranscriptWord({
 }
 
 export default function VoiceScreen() {
-  const pulse = useSharedValue(1);
   const spin = useSharedValue(0);
   const progress = useSharedValue(0);
 
   useEffect(() => {
-    pulse.value = withRepeat(
-      withTiming(1.04, { duration: 1600, easing: Easing.inOut(Easing.quad) }),
-      -1,
-      true,
-    );
     spin.value = withRepeat(
-      withTiming(360, { duration: 9000, easing: Easing.linear }),
+      withTiming(360, { duration: 3000, easing: Easing.linear }),
       -1,
       false,
     );
@@ -105,11 +99,8 @@ export default function VoiceScreen() {
       TRANSCRIPT_DELAY,
       withTiming(beats, { duration: beats * WORD_STEP, easing: Easing.linear }),
     );
-  }, [pulse, spin, progress]);
+  }, [spin, progress]);
 
-  const pulseStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: pulse.value }],
-  }));
   const spinStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${spin.value}deg` }],
   }));
@@ -126,12 +117,10 @@ export default function VoiceScreen() {
             <CloseChatPill />
           </View>
 
-          {/* Listening orb: light side circles the sphere while it breathes */}
+          {/* Listening orb: the light side circles the sphere */}
           <View className="items-center pt-8">
-            <Animated.View style={pulseStyle}>
-              <Animated.View style={spinStyle}>
-                <Orb size={250} glow />
-              </Animated.View>
+            <Animated.View style={spinStyle}>
+              <Orb size={250} glow />
             </Animated.View>
             <Text className="-mt-4 font-inter text-[13px] text-content-faint">
               Aira is listening....
@@ -142,7 +131,7 @@ export default function VoiceScreen() {
 
           {/* Live transcript: each word lands muted, then turns active */}
           <View
-            className="flex-row flex-wrap justify-center px-9"
+            className="flex-row flex-wrap justify-center px-6"
             accessible
             accessibilityLabel={TRANSCRIPT.join(" ")}
           >

@@ -8,7 +8,7 @@ type OrbProps = {
 
 /**
  * The glowing 3D orange sphere: bright cream highlight off-center at the
- * top, deepening to a dark rust rim, with an optional outer halo.
+ * top deepening to a dark rust rim, with an optional outer halo.
  */
 export function Orb({ size = 280, glow = false }: OrbProps) {
   // The sphere occupies the middle 2/3 of the canvas when glowing so the

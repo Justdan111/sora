@@ -45,6 +45,9 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
+          // The screens slide themselves in from the bottom; keep the
+          // native stack transition to a plain fade so both don't fight.
+          animation: 'fade',
           contentStyle: { backgroundColor: '#170B05' },
         }}
       />

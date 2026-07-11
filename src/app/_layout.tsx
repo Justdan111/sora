@@ -10,7 +10,14 @@ import {
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { cssInterop } from 'nativewind';
 import { useEffect } from 'react';
+import Animated from 'react-native-reanimated';
+
+// NativeWind only auto-wires className on core components; register the
+// Reanimated primitives we style with Tailwind classes.
+cssInterop(Animated.View, { className: 'style' });
+cssInterop(Animated.Text, { className: 'style' });
 
 SplashScreen.preventAutoHideAsync();
 

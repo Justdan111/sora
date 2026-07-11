@@ -6,14 +6,19 @@ const noise = require('../../assets/images/noise.png');
 /**
  * Dark backdrop for the voice and chat screens: near-black base with a
  * warm orange glow bleeding in from the top, a faint ember rising from
- * the bottom, and film grain.
+ * the bottom, and film grain. `bright` widens and lightens the top glow
+ * (voice screen).
  */
-export function GlowBackground() {
+export function GlowBackground({ bright = false }: { bright?: boolean }) {
   return (
     <View style={[StyleSheet.absoluteFill, { backgroundColor: '#060302' }]} pointerEvents="none">
       <LinearGradient
-        colors={['#B04A0F', 'rgba(96, 38, 8, 0.55)', 'rgba(6, 3, 2, 0)']}
-        locations={[0, 0.14, 0.4]}
+        colors={
+          bright
+            ? ['#D46A1B', 'rgba(178, 74, 14, 0.7)', 'rgba(6, 3, 2, 0)']
+            : ['#B04A0F', 'rgba(96, 38, 8, 0.55)', 'rgba(6, 3, 2, 0)']
+        }
+        locations={bright ? [0, 0.17, 0.48] : [0, 0.14, 0.4]}
         style={StyleSheet.absoluteFill}
       />
       <LinearGradient

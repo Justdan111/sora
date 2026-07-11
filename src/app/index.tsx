@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GradientBackground } from '@/components/gradient-background';
@@ -75,7 +75,9 @@ export default function HomeScreen() {
                   return (
                     <Animated.View
                       key={word}
-                      entering={FadeInDown.duration(WORD_DURATION).delay(delay)}>
+                      entering={FadeInDown.duration(WORD_DURATION)
+                        .delay(delay)
+                        .easing(Easing.out(Easing.cubic))}>
                       <Text className="font-inter-semibold text-[42px] leading-[47px] tracking-tight text-content-primary">
                         {indexInLine < line.length - 1 ? `${word} ` : word}
                       </Text>
@@ -95,7 +97,9 @@ export default function HomeScreen() {
             {SUGGESTIONS.map((label, index) => (
               <Animated.View
                 key={label}
-                entering={FadeInDown.duration(450).delay(CARDS_BASE_DELAY + index * CARD_STAGGER)}>
+                entering={FadeInDown.duration(450)
+                  .delay(CARDS_BASE_DELAY + index * CARD_STAGGER)
+                  .easing(Easing.out(Easing.cubic))}>
                 <SuggestionCard label={label} onPress={setPrompt} />
               </Animated.View>
             ))}
@@ -104,7 +108,9 @@ export default function HomeScreen() {
           {/* Composer: fades up together with the cards */}
           <Animated.View
             className="h-[36%]"
-            entering={FadeIn.duration(600).delay(CARDS_BASE_DELAY)}>
+            entering={FadeIn.duration(600)
+              .delay(CARDS_BASE_DELAY)
+              .easing(Easing.out(Easing.quad))}>
             <PromptPanel
               value={prompt}
               onChangeText={setPrompt}

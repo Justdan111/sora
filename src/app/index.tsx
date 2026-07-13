@@ -55,7 +55,7 @@ export default function HomeScreen() {
     <View className="flex-1 bg-ember-night">
       <Animated.View
         className="flex-1"
-        entering={SlideInDown.duration(560).easing(Easing.out(Easing.cubic))}
+        entering={SlideInDown.duration(1000).easing(Easing.out(Easing.cubic))}
       >
         <GradientBackground />
         <SafeAreaView className="flex-1">
